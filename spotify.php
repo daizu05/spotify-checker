@@ -19,8 +19,7 @@ curl_setopt($request, CURLOPT_HTTPHEADER, array(
 ));
 $response = curl_exec($request);
 curl_close($request);
-preg_match_all("/set-cookie: ([^;]*)/i", $response, $cookies);
-$csrf_token = getCookie("csrf_token", $cookies);
+$csrf_token = getCookie("csrf_token", $cookies, $response);
 
 // check if account valid
 if($csrf_token != null){
@@ -40,8 +39,7 @@ if($csrf_token != null){
 		
 		// check if success then goto account overwiew to get the info we want
 		if(strpos($response, "displayName")){
-			preg_match_all("/set-cookie: ([^;]*)/i", $response, $cookies);
-			$sp_dc = getCookie("sp_dc", $cookies);
+			$sp_dc = getCookie("sp_dc", $cookies, $response);
 			if($sp_dc != null){
 				$request = curl_init();
 				curl_setopt($request, CURLOPT_URL,"https://www.spotify.com/us/account/overview/");
@@ -73,7 +71,8 @@ if($csrf_token != null){
 
 echo json_encode($json);
 
-function getCookie($name, $cookies){
+function getCookie($name, $cookies, $response){
+	preg_match_all("/set-cookie: ([^;]*)/i", $response, $cookies);
 	foreach($cookies[1] as $cookie){
 		$cookieName = explode("=", $cookie)[0];
 		$cookieValue = explode("=", $cookie)[1];

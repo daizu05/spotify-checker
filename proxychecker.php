@@ -67,8 +67,9 @@ function checker($ips,$thread)
 					echo "[~]Proxy works -> ".$ip[$cid]."\n";
 					save_file("works.txt",$ip[$cid]);
 				}
-			}
-		}
+			} //end of for loop
+		} //end of foreach
+		
 	$time2 = time();
 	echo "\n[+]Total working proxies: $total,checking completed\n";
 	echo "[+]Elapsed time -> ".($time2-$time1)." seconds\n";
